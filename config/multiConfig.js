@@ -22,7 +22,7 @@ exports.config = {
   suites: {
     allureFeature: ["../features/allure.feature"],
     cucumberFeature: ["../features/cucumber.feature"],
-    protractorFeature: ["../features/protractor.feature"]
+    protractorFeature: ["../features/Angular.feature"]
   },
 
   onPrepare: function() {

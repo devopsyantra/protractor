@@ -1,6 +1,6 @@
-import { browser } from 'protractor';
+//import { browser } from 'protractor';
 
-const EC = browser.ExpectedConditions;
+//const EC = browser.ExpectedConditions;
 /*
 This class assists in waiting for non-angular page screen elements
  */
@@ -17,4 +17,4 @@ class ElementHelper {
 	}
 }
 
-export default ElementHelper;
+//export default ElementHelper;

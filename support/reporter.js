@@ -1,9 +1,10 @@
+/*
 const fs = require("fs");
 const mkdirp = require("mkdirp");
 const path = require("path");
 const reporter = require("cucumber-html-reporter");
 const report = require("cucumber-html-report");
-const htmlReports = process.cwd() + "/reports/html";
+const htmlReports = process.cwd()+"_" +new Date().getDate()+"_"+new Date().getHours()+"_"+new Date().getMilliseconds()+"_"+ "/reports/html";
 const targetJson = process.cwd() + "/reports/json/cucumber_report.json";
 
 const cucumberReportOptions = {
@@ -53,10 +54,10 @@ class Reporter {
     }
   }
 
-  /**
+  /!**
    * Allure reports method, would work only with cucumber 1.3.x & less versions
    * Currently incompatible with latest cucumber 3.x version
-   */
+   *!/
 
   static createAllureXML() {
     const allureReporter = require("cucumberjs-allure-reporter");
@@ -67,4 +68,4 @@ class Reporter {
     })
   }
 }
-module.exports = Reporter;
+module.exports = Reporter;*/
