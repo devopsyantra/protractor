@@ -1,61 +1,26 @@
-FROM debian:testing
-
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update && \
-  apt-get install -y curl && \
-  openjdk-8-jre \
-  xvfb \
-  libgconf-2-4 \
-  libexif12 \
-  chromium \
-  npm \
-  supervisor \
-  netcat-traditional \
-  curl \
-  ffmpeg && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/
-
-# ffmpeg is hosted at deb-multimedia.org
-RUN curl http://www.deb-multimedia.org/pool/main/d/deb-multimedia-keyring/deb-multimedia-keyring_2016.8.1_all.deb \
-  -o /tmp/deb-multimedia-keyring.deb && \
-  dpkg -i /tmp/deb-multimedia-keyring.deb && \
-  rm /tmp/deb-multimedia-keyring.deb && \
-  echo "deb http://www.deb-multimedia.org stretch main non-free" >> /etc/apt/sources.list
-
-RUN apt-get update && \
-    apt-get install -y \
-    *
-
-RUN ln -s /usr/bin/nodejs /usr/bin/node
-
-# Upgrade NPM to latest (address issue #3)
-RUN npm install -g npm
-
-# Install Protractor
-RUN npm install -g protractor@4.0.4
-
-# Install Selenium and Chrome driver
-RUN webdriver-manager update
-
-# Add a non-privileged user for running Protrator
-RUN adduser --home /project --uid 1100 \
-  --disabled-login --disabled-password --gecos node node
-
-# Add main configuration file
-ADD supervisor.conf /etc/supervisor/supervisor.conf
-
-# Add service defintions for Xvfb, Selenium and Protractor runner
-ADD supervisord/*.conf /etc/supervisor/conf.d/
-
-# By default, tests in /data directory will be executed once and then the container
-# will quit. When MANUAL envorinment variable is set when starting the container,
-# tests will NOT be executed and Xvfb and Selenium will keep running.
-ADD bin/run-protractor /usr/local/bin/run-protractor
-
-# Container's entry point, executing supervisord in the foreground
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisor.conf"]
-
-# Protractor test project needs to be mounted at /project
-VOLUME ["/project"]
+FROM node:6.9.4-slim
+MAINTAINER j.ciolek@webnicer.com
+WORKDIR /tmp
+COPY webdriver-versions.js ./
+ENV CHROME_PACKAGE="google-chrome-stable_59.0.3071.115-1_amd64.deb" NODE_PATH=/usr/local/lib/node_modules:/protractor/node_modules
+RUN npm install -g protractor@4.0.14 minimist@1.2.0 && \
+    node ./webdriver-versions.js --chromedriver 2.32 && \
+    webdriver-manager update && \
+    echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y xvfb wget sudo && \
+    apt-get install -y -t jessie-backports openjdk-8-jre && \
+    wget https://github.com/webnicer/chrome-downloads/raw/master/x64.deb/${CHROME_PACKAGE} && \
+    dpkg --unpack ${CHROME_PACKAGE} && \
+    apt-get install -f -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* \
+    rm ${CHROME_PACKAGE} && \
+    mkdir /protractor
+COPY protractor.sh /
+COPY environment /etc/sudoers.d/
+# Fix for the issue with Selenium, as described here:
+# https://github.com/SeleniumHQ/docker-selenium/issues/87
+ENV DBUS_SESSION_BUS_ADDRESS=/dev/null SCREEN_RES=1280x1024x24
+WORKDIR /protractor
+ENTRYPOINT ["/protractor.sh"]
