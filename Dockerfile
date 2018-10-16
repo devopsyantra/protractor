@@ -24,4 +24,4 @@ COPY environment /etc/sudoers.d/
 ENV DBUS_SESSION_BUS_ADDRESS=/dev/null SCREEN_RES=1280x1024x2
 RUN chmod +x /protractor.sh
 WORKDIR /protractor
-ENTRYPOINT ["/protractor.sh"]
+#ENTRYPOINT ["/protractor.sh"]
