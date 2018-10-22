@@ -6,7 +6,11 @@ exports.config = {
   directConnect:true,
   baseUrl: "https://angularjs.org/",
   capabilities: {
-    browserName: process.env.TEST_BROWSER_NAME || "chrome"
+  browserName: process.env.TEST_BROWSER_NAME || "chrome",
+  //Below argument (no-sandbox) required to run in Docker container
+  'chromeOptions': {
+      'args': ['no-sandbox']
+  } 
   },
   framework: "custom",
   frameworkPath: require.resolve("protractor-cucumber-framework"),
