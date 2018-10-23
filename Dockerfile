@@ -26,4 +26,5 @@ RUN chmod +x /protractor.sh
 WORKDIR /protractor
 #ENTRYPOINT ["/protractor.sh"]
 COPY . /protractor
-RUN ./protractor.sh
+
+ENTRYPOINT ["/protractor.sh"]
