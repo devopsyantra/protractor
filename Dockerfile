@@ -26,7 +26,4 @@ RUN chmod +x /protractor.sh
 WORKDIR /protractor
 #ENTRYPOINT ["/protractor.sh"]
 COPY . /protractor
-RUN npm install && \
-    npm run webdriver-update && \
-CMD webdriver-manager update && \
-    xvfb-run -a --server-args='-ac -screen 0 1024x768x16' npm run test
+RUN ./protractor.sh
