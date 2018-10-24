@@ -26,5 +26,6 @@ RUN chmod +x /protractor.sh
 WORKDIR /protractor
 #ENTRYPOINT ["/protractor.sh"]
 COPY . /protractor
+RUN npm install
 
 ENTRYPOINT ["/protractor.sh"]
