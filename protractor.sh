@@ -10,7 +10,7 @@
 # to set the uid and gid of that user to match those of the current directory owner.
 # Otherwise protractor could experience problems reading files from the current directory.
 #sudo -u protractor xvfb-run --server-args="-screen 0 ${SCREEN_RES}" -a protractor $@
-npm install
+#npm install
 npm run webdriver-update
 webdriver-manager update
 xvfb-run -a --server-args='-ac -screen 0 1024x768x16' npm run test
